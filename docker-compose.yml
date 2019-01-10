@@ -1,0 +1,43 @@
+version: '2'
+services:
+  mongo:
+    image: mongo:4.1-xenial
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    expose:
+    - 27017
+    container_name: mongo
+  ui:
+    build:
+      context: ui
+    ports:
+    - 8080:8080
+    container_name: ui
+    depends_on:
+    - mongo
+  ads:
+    build:
+      context: ads
+    ports:
+    - 8081:8081
+    container_name: ads
+    depends_on:
+    - mongo
+  ai:
+    build:
+      context: ai
+    expose:
+    - 8082
+    container_name: ai
+    depends_on:
+    - mongo
+  userpref:
+    build:
+      context: user
+    expose:
+    - 8083
+    container_name: userpref
+    depends_on:
+    - mongo

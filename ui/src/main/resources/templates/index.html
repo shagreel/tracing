@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vacation Headquarters</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<a href="/login">Login</a>
+<p>
+    <span th:text="'Hello, ' + ${name} + '!'" th:unless="${name == 'default'}"/>
+    <span> Where will you go today?</span>
+</p>
+<table>
+    <tr>
+        <td><a th:href="'/destination?dest=brazil'"><img src="images/brazil.jpg"></a></td>
+        <td><a th:href="'/destination?dest=rome'"><img src="images/rome.jpg"></a></td>
+        <td><a th:href="'/destination?dest=thailand'"><img src="images/thailand.jpg"></a></td>
+    </tr>
+    <tr><td colspan="3"><img th:src="'http://localhost:8081/ad/dynamic?user=' + ${name}"></td></tr>
+</table>
+</body>
+</html>
