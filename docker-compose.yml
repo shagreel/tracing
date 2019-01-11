@@ -14,6 +14,10 @@ services:
       context: ui
     ports:
     - 8080:8080
+    environment:
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: tracing_ui
+      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
     container_name: ui
     depends_on:
     - mongo
@@ -22,6 +26,10 @@ services:
       context: ads
     ports:
     - 8081:8081
+    environment:
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: tracing_ads
+      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
     container_name: ads
     depends_on:
     - mongo
@@ -30,6 +38,10 @@ services:
       context: ai
     expose:
     - 8082
+    environment:
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: tracing_ai
+      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
     container_name: ai
     depends_on:
     - mongo
@@ -38,6 +50,10 @@ services:
       context: user
     expose:
     - 8083
+    environment:
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: tracing_userpref
+      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
     container_name: userpref
     depends_on:
     - mongo
