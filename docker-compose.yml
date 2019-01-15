@@ -9,35 +9,59 @@ services:
     expose:
     - 27017
     container_name: mongo
+  jaeger:
+    image: jaegertracing/all-in-one:1.8
+    expose:
+    - 5775/udp
+    - 6831/udp
+    - 6832/udp
+    - 5778
+    - 14268
+    - 9411
+    ports:
+    - 16686:16686
+    container_name: jaeger
   ui:
     build:
       context: ui
     ports:
     - 8080:8080
+    environment:
+      JAEGER_THRIFT_URL: http://jaeger:14268/api/traces
     container_name: ui
     depends_on:
     - mongo
+    - jaeger
   ads:
     build:
       context: ads
     ports:
     - 8081:8081
+    environment:
+      JAEGER_THRIFT_URL: http://jaeger:14268/api/traces
     container_name: ads
     depends_on:
     - mongo
+    - jaeger
   ai:
     build:
       context: ai
     expose:
     - 8082
+    environment:
+      JAEGER_THRIFT_URL: http://jaeger:14268/api/traces
     container_name: ai
     depends_on:
     - mongo
+    - jaeger
   userpref:
     build:
       context: user
     expose:
     - 8083
+    environment:
+      JAEGER_THRIFT_URL: http://jaeger:14268/api/traces
     container_name: userpref
     depends_on:
     - mongo
+    - jaeger

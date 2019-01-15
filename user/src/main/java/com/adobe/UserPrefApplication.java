@@ -21,13 +21,23 @@ SOFTWARE.
 */
 package com.adobe;
 
+import com.adobe.models.SpanUtil;
+import com.adobe.models.TracingFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class UserPrefApplication {
+
+    private @Autowired
+    AutowireCapableBeanFactory beanFactory;
 
     public static void main(String[] args) {
         SpringApplication.run(UserPrefApplication.class, args);
@@ -38,4 +48,19 @@ public class UserPrefApplication {
         return new RestTemplate();
     }
 
+    @Bean
+    public FilterRegistrationBean<TracingFilter> tracingFilter() {
+        FilterRegistrationBean<TracingFilter> registrationBean = new FilterRegistrationBean<>();
+        TracingFilter tracingFilter = new TracingFilter();
+        beanFactory.autowireBean(tracingFilter);
+        registrationBean.setFilter(tracingFilter);
+        registrationBean.addUrlPatterns("/*");
+        return registrationBean;
+    }
+
+    @Bean
+    @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public SpanUtil spanUtil() {
+        return new SpanUtil();
+    }
 }

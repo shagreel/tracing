@@ -21,13 +21,26 @@ SOFTWARE.
 */
 package com.adobe;
 
+import com.adobe.models.SpanHttpRequestInterceptor;
+import com.adobe.models.SpanUtil;
+import com.adobe.models.TracingFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Collections;
 
 @SpringBootApplication
 public class UIApplication {
+
+    private @Autowired
+    AutowireCapableBeanFactory beanFactory;
 
     public static void main(String[] args) {
         SpringApplication.run(UIApplication.class, args);
@@ -35,7 +48,26 @@ public class UIApplication {
 
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        RestTemplate template = new RestTemplate();
+        SpanHttpRequestInterceptor interceptor = new SpanHttpRequestInterceptor();
+        beanFactory.autowireBean(interceptor);
+        template.setInterceptors(Collections.singletonList(interceptor));
+        return template;
     }
 
+    @Bean
+    public FilterRegistrationBean<TracingFilter> tracingFilter() {
+        FilterRegistrationBean<TracingFilter> registrationBean = new FilterRegistrationBean<>();
+        TracingFilter tracingFilter = new TracingFilter();
+        beanFactory.autowireBean(tracingFilter);
+        registrationBean.setFilter(tracingFilter);
+        registrationBean.addUrlPatterns("/*");
+        return registrationBean;
+    }
+
+    @Bean
+    @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public SpanUtil spanUtil() {
+        return new SpanUtil();
+    }
 }
