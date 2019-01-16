@@ -51,7 +51,7 @@ public class ImageFinderService {
             boolean failure = (rand.nextInt(1000) < 10);
             int sleepTime;
             if (failure) {
-                sleepTime = rand.nextInt(2000) + 500;
+                sleepTime = rand.nextInt(8000) + 2000;
                 logger.error("Message=\"Ad Finder Artificial Failure\" Millis={}", sleepTime);
             } else {
                 sleepTime = rand.nextInt(30) + 20;

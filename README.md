@@ -18,6 +18,9 @@ docker-compose up --build
 The command above will build each of the spring boot services, start mongodb and then start each of the services. Each distributed tracing
 implementation may have slight differences, but the same command will start everything need to run the complete application.
 
+One of the main reasons to use distributed tracing is to be able to track down failures within a distributed system. 
+Therefore, throughout the code there are artificially created exceptions and thread sleeps that occur at random intervals.
+Hopefully all of the artificial problems can be found using only the tracing results. 
 
 New Relic
 -----
